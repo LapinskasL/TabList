@@ -43,7 +43,6 @@ function sendMessageToBackground(listNum) {
     });
 }
 
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ VVVV this rn
 
 // Restores list into the textbox.
 function restore_options() {
