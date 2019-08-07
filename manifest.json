@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "TabList",
+    "version": "0.1",
+    "permissions": [ 
+        //"webNavigation", 
+        //"*://*/*",
+        "storage" // for chrome.storage
+    ],
+    // "content_scripts": [
+    //     {
+    //         "matches": ["https://www.youtube.com/*", 
+    //                     "http://www.youtube.com/*" ],
+    //         "js": ["content.js"],
+    //         "run_at": "document_end"
+    //     }
+    // ],
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_popup": "popup/popup.html",
+        "default_title": "TabList"
+    },
+    "options_ui": {
+        "page": "options/options.html",
+        "open_in_tab": false
+      },
+    "background": {
+        "scripts": ["background.js"]
+    }
+}

@@ -1,0 +1,10 @@
+.textbox { 
+    width: 30em; 
+    height: 8em;
+    margin-top: 0.2em;
+}
+
+.listName {
+    font: 1.2em arial, sans-serif;
+    font-weight: bold;
+}
