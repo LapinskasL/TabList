@@ -1,21 +1,22 @@
 console.log("popup.js running");
 
 window.onload = function() {
-    let launchList1 = document.getElementById('launchList1');
-    launchList1.addEventListener("click", ()=> restoreAndLaunch("1"));
 
-    let launchList2 = document.getElementById('launchList2');
-    launchList2.addEventListener("click", ()=> restoreAndLaunch("2"));
+    positionBlocks();
 
-    let launchList3 = document.getElementById('launchList3');
-    launchList3.addEventListener("click", ()=> restoreAndLaunch("3"));
-    console.log("popup window.onload ran");
+    let tabIcons = document.getElementsByClassName('tabIcon');
+    for (let i = 0; i < tabIcons.length; i++) {
+        tabIcons[i].addEventListener("click", ()=> restoreAndLaunch(i));
+    }
 
     restoreListNames();
+
     let gearOptions = document.getElementById('gearIcon');
     gearOptions.addEventListener("click", function () {
         chrome.runtime.openOptionsPage();
     });
+
+    console.log("popup window.onload ran");
 };
 
 function nameIfEmpty(string, num) {
@@ -28,39 +29,24 @@ function nameIfEmpty(string, num) {
 
 function restoreListNames() {
     chrome.storage.sync.get({
-        listName1: "",
-        listName2: "",
-        listName3: "",
+        listNames: [],
     }, function(items) {
-        let labels = document.getElementsByTagName('label'); 
-        labels[0].innerHTML = items.listName1;
-        labels[1].innerHTML = items.listName2;
-        labels[2].innerHTML = items.listName3;
+        let tabNames = document.getElementsByClassName('tabName');
+        let listNames = items.listNames;
+        console.log(listNames[0]);
+        for (let i = 0; i < tabNames.length; i++) {
+            tabNames[i].innerHTML = listNames[i];
+        }
     });  
 }
 
-function restoreAndLaunch(number) {
-    console.log("restoring is happening");
-    // Use default value comments = false and playlists = false.
+function restoreAndLaunch(index) {
+    console.log("restoring is happening"); 
     chrome.storage.sync.get({
-        websiteList1: "",
-        websiteList2: "",
-        websiteList3: "",
+        websiteList: [],
     }, function(items) {
-        switch (number) {
-            case "1":
-                sendMessageToOptions(items.websiteList1);
-                break;
-            case "2":
-                sendMessageToOptions(items.websiteList2);
-                break;
-            case "3":
-                sendMessageToOptions(items.websiteList3);
-                break;
-            default:
-                break;
-        }
-    });    
+        sendMessageToOptions(items.websiteList[index]);
+    });
   }
 
 function sendMessageToOptions(theList) {
@@ -74,4 +60,15 @@ function sendMessageToOptions(theList) {
     }
 }
 
+function positionBlocks() {
+    let tabBlocks = document.getElementsByClassName('tabBlock');
 
+    let left = 1;
+    for (let i = 0; i < tabBlocks.length; i++) {
+        tabBlocks[i].style.position = "absolute";
+        tabBlocks[i].style.top = "0.8em";
+        tabBlocks[i].style.left = left + "em";
+        left += 6;
+        console.log(left);
+    }
+}

@@ -1,10 +1,14 @@
 .textbox { 
     width: 30em; 
-    height: 8em;
+    height: 6.9em;
     margin-top: 0.2em;
 }
 
-.listName {
+.listNameSpan {
     font: 1.2em arial, sans-serif;
     font-weight: bold;
+}
+
+h3 {
+    color: red;
 }
