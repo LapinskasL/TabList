@@ -1,6 +1,9 @@
 console.log("popup.js running");
 
 window.onload = function() {
+    //@@@TEMPORARY GLOBAL?????
+    tabBlockNum = document.getElementsByClassName('tabBlock').length;
+
 
     positionBlocks();
 
@@ -32,7 +35,7 @@ function restoreListNames() {
         listNames: [],
     }, function(items) {
         let tabNames = document.getElementsByClassName('tabName');
-        let listNames = items.listNames;
+        let listNames = resizeArray(items.listNames, tabBlockNum);
         console.log(listNames[0]);
         for (let i = 0; i < tabNames.length; i++) {
             tabNames[i].innerHTML = listNames[i];
@@ -43,8 +46,10 @@ function restoreListNames() {
 function restoreAndLaunch(index) {
     console.log("restoring is happening"); 
     chrome.storage.sync.get({
-        websiteList: [],
+        websiteList: [""],
     }, function(items) {
+        let websiteList = resizeArray(items.websiteList, tabBlockNum);
+        websiteList.length = 3;
         sendMessageToOptions(items.websiteList[index]);
     });
   }
@@ -71,4 +76,16 @@ function positionBlocks() {
         left += 6;
         console.log(left);
     }
+}
+
+function resizeArray(arr, size) {
+    if (arr.length !== size) {
+        arr.length = size;
+        for (let i = 0; i < size; i++) {
+            if (arr[i] == null || arr[i] == undefined) {
+                arr[i] = "";
+            }
+        }
+    }
+    return arr;
 }

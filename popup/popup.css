@@ -39,25 +39,6 @@ body {
 }
 
 
-
-
-
-/* #tabBlock1 {
-    position: absolute;
-    top: 0.8em;
-    left: 1em;
-}
-#tabBlock2 {
-    position: absolute;
-    top: 0.8em;
-    left: 7em;
-}
-#tabBlock3 {
-    position: absolute;
-    top: 0.8em;
-    left: 13em;
-} */
-
 #tabBlock1 img:hover {
     -moz-box-shadow:  0px 0px 3px rgb(193, 68, 48);
     -webkit-box-shadow:  0px 0px 3px rgb(193, 68, 48);

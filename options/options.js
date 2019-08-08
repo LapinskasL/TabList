@@ -1,6 +1,9 @@
 console.log("options.js running");
 
 window.onload = function() {
+    //@@@TEMPORARY GLOBAL?????
+    textBoxesNum = document.getElementsByClassName('textbox').length;
+
 
     restoreData();
 
@@ -8,7 +11,7 @@ window.onload = function() {
     let textBoxes = document.getElementsByClassName('textbox');
     let inputs = document.getElementsByTagName('input');
 
-    for (let i = 0; i < testButtons.length; i++) {
+    for (let i = 0; i < textBoxes.length; i++) {
         testButtons[i].addEventListener("click", ()=> sendMessageToBackground(i));
         textBoxes[i].addEventListener("change", saveData);
         inputs[i].addEventListener("change", saveData);
@@ -22,9 +25,9 @@ function saveData() {
         listNames: [],
         websiteList: [],
     }, function (items) {
-        var listNames = items.listNames;
+        var listNames = resizeArray(items.listNames, 3);
+        var websiteList = resizeArray(items.websiteList, 3)
         var listArr = document.getElementsByClassName('listName');
-        var websiteList = items.websiteList;
         var websiteListArr = document.getElementsByClassName('textbox');
 
         listNames = [];
@@ -61,9 +64,24 @@ function restoreData() {
     }, function(items) {
         var listArr = document.getElementsByClassName('listName');
         var textBoxes = document.getElementsByClassName('textbox');
+
+        var listNames = resizeArray(items.listNames, 3);
+        var websiteList = resizeArray(items.websiteList, 3)
         for (let i = 0; i < listArr.length; i++) {
-            listArr[i].value = items.listNames[i];
-            textBoxes[i].value = items.websiteList[i];
+            listArr[i].value = listNames[i];
+            textBoxes[i].value = websiteList[i];
         }
     });
   }
+
+
+function resizeArray(arr, size) {
+    arr.length = size;
+    for (let i = 0; i < size; i++) {
+        if (arr[i] == null || arr[i] == undefined) {
+            arr[i] = "";
+        }
+    }
+
+    return arr;
+}
