@@ -3,28 +3,100 @@
 } */
 
 body {
-    width: 21em;
-    height: 5.5em;
+    width: 30.5em;
     background-image: url(../images/gray_background.png);
+    margin: 0;
+}
+
+/* #tabBlockDivWrapper {
+    margin: 1em;
+}  */
+
+#toolbar {
+    width: 3.5em;
+    height: 17em;
+    margin-right: 1.5em;
+    background-color: rgb(172, 172, 172);
+    float: left;
 }
 
 .session label {
     padding-bottom: 0.2em;
     font-family: Tahoma, Verdana, sans-serif;
 }
+
+.tabBlock {
+    float: left;
+    margin: 1.5em 1em 0 0;
+    width: 4em;
+    height: 5.6em;
+}
+
+.tabName {
+    float: none;
+}
+
 .tabIcon {
+    position: relative;
+	top: 0;
+	left: 0;
     width: 4em;
     height: 4em;
+}
+
+.deleteIcon {
+    width: 2em;
+    height: 2em;
+    position: relative;
+    bottom: 1.5em;
+    left: 2.5em;
+    float: none;
+    display: none;
+
+}
+
+/* pointer cursors */
+#gearIcon, .deleteIcon,
+.tabIcon, #plusIcon,
+#trashClosedIcon,
+#trashOpenedIcon {
     cursor: pointer;
 }
 
-#gearIcon {
+.deleteIcon:hover {
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    filter: brightness(120%);
+
+}
+
+#gearIcon, #trashClosedIcon,
+#plusIcon, #trashOpenedIcon {
     width: 2.5em;
     height: 2.5em;
-    cursor: pointer;
     position: absolute;
-    bottom: 0.7em;
-    right: 0.8em;
+}
+
+#gearIcon {
+    bottom: 0.5em;
+    left: 0.5em;
+}
+
+#trashOpenedIcon {
+    display: none;
+}
+
+#trashClosedIcon,
+#trashOpenedIcon {
+    bottom: 4em;
+    left: 0.5em;
+}
+
+#plusIcon {
+    top: 0.5em;
+    left: 0.5em;
 }
 #gearIcon:hover {
     -webkit-transform:rotate(45deg);
@@ -35,22 +107,15 @@ body {
     -webkit-transition-duration: 0.3s;
     -moz-transition-duration: 0.3s;
     -o-transition-duration: 0.3s;
-     transition-duration: 0.3s;
+    transition-duration: 0.3s;
 }
 
 
-#tabBlock1 img:hover {
-    -moz-box-shadow:  0px 0px 3px rgb(193, 68, 48);
-    -webkit-box-shadow:  0px 0px 3px rgb(193, 68, 48);
-     box-shadow: 0px 0px 3px rgb(193, 68, 48);
-}
-#tabBlock2 img:hover {
-    -moz-box-shadow:  0px 0px 3px rgb(46, 83, 138);
-    -webkit-box-shadow:  0px 0px 3px rgb(46, 83, 138);
-     box-shadow: 0px 0px 3px rgb(46, 83, 138);
-}
-#tabBlock3 img:hover {
-    -moz-box-shadow:  0px 0px 3px rgb(198, 194, 84);
-    -webkit-box-shadow:  0px 0px 3px rgb(198, 194, 84);
-     box-shadow: 0px 0px 3px rgb(198, 194, 84);
-}
+
+
+/* .tabBlock img:hover {
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -o-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+} */
