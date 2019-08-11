@@ -1,11 +1,23 @@
 //todo: implement deletion function
+//TODO:
+//0. fix bug with deleting a tab and then trying to launch another one while still in the delete menu
+//   This is an issue with indexes of tabs being preset after deletion.
+//   POTENTIAL SOLUTION: repaste updated number of tabs   OR    rewrite their indexes?
 
-console.log("popup.js running");
+//1. fix issue with spaces in tab names
+//2. format tab names nicely
+//3. make tab icons more varied and exciting to click on
+//4. change addtab icon (maybe include a ghost tab when hovered over addtab icon. Or maybe
+//   make the icon where a new tab would be.)
+
+
+
+console.log('popup.js running');
 
 window.onload = function() {
     loadTabBlocks();
-    document.getElementById("plusIcon").addEventListener("click", addTab);
-    console.log("popup window.onload ran");
+    document.getElementById('plusIcon').addEventListener('click', addTab);
+    console.log('popup window.onload ran');
 };
 
 function loadTabBlocks() {
@@ -24,29 +36,100 @@ function initialLoad(numOfBlocks) {
     retrieveTabInfo();
 
     let gearOptions = document.getElementById('gearIcon');
-    gearOptions.addEventListener("click", function () {
+    gearOptions.addEventListener('click', function () {
         chrome.runtime.openOptionsPage();
     });
 
+    let plusIcon = document.getElementById('plusIcon');
+
     let trashClosedIcon = document.getElementById('trashClosedIcon');
-    trashClosedIcon.addEventListener("click", function() {
-        trashClosedIcon.style.display = "none";
+    trashClosedIcon.addEventListener('click', function() {
+        plusIcon.style.display = 'none';
+        trashClosedIcon.style.display = 'none';
         let trashOpenedIcon = document.getElementById('trashOpenedIcon');
-        trashOpenedIcon.style.display = "inline";
+        trashOpenedIcon.style.display = 'inline';
         let deleteIcons = document.getElementsByClassName('deleteIcon');
         for (let i = 0; i < deleteIcons.length; i++) {
-            deleteIcons[i].style.display = "inline";
+            deleteIcons[i].style.display = 'inline';
         }
 
-        trashOpenedIcon.addEventListener("click", function() {
-            trashOpenedIcon.style.display = "none";
-            trashClosedIcon.style.display = "inline";
+        trashOpenedIcon.addEventListener('click', function() {
+            plusIcon.style.display = 'inline';
+            trashOpenedIcon.style.display = 'none';
+            trashClosedIcon.style.display = 'inline';
             for (let i = 0; i < deleteIcons.length; i++) {
-                deleteIcons[i].style.display = "none";
+                deleteIcons[i].style.display = 'none';
             }
         });
     });
+
+    deleteIcon();
+
 }
+
+
+function deleteIcon() {
+    let deleteIcons = document.getElementsByClassName('deleteIcon');
+    for (let i = 0; i < deleteIcons.length; i++) {
+        deleteIcons[i].addEventListener('click', ()=> removeTabBlockAndListeners(i), false);
+    }
+}
+
+function removeTabBlockAndListeners(index) {
+    console.log('popup remove listeners and block index: ' + index);
+    removeTabBlock(index);
+    removeListeners();
+    updateTabSettings(index);
+
+    chrome.runtime.sendMessage({
+        msg: 'removeTabSettings',
+        tabIndex: index,
+    });
+}
+
+function removeTabBlock(index) {
+    let tabBlocks = document.getElementsByClassName('tabBlock');
+    tabBlocks[index].remove();
+}
+
+function removeListeners() {
+    let deleteIcons = document.getElementsByClassName('deleteIcon');
+    for (let i = 0; i < deleteIcons.length; i++) {
+        var deleteIconsNew = deleteIcons[i].cloneNode(true);
+        deleteIcons[i].parentNode.replaceChild(deleteIconsNew, deleteIcons[i]);  
+    }
+    deleteIcon();
+}
+
+
+
+
+function updateTabSettings(index) {
+    chrome.storage.sync.get({
+        listNames: [],
+        websiteList: [],
+        tabBlocks: 1,
+    }, function (items) {
+        let updatedListNames = [];
+        let updatedWebsiteList = [];
+        let updatedTabBlocks =  items.tabBlocks - 1;
+        for (let i = 0; i < items.tabBlocks; i++) {
+            if (i !== index) {
+                updatedListNames.push(items.listNames[i]);
+                updatedWebsiteList.push(items.websiteList[i]);
+            }
+        }
+        // set the new array value to the same key
+        chrome.storage.sync.set({
+            listNames: updatedListNames,
+            websiteList: updatedWebsiteList,
+            tabBlocks: updatedTabBlocks,
+        });
+    });
+}
+
+
+
 
 function retrieveTabInfo() {
     var tabBlockNum = document.getElementsByClassName('tabBlock').length;
@@ -54,7 +137,7 @@ function retrieveTabInfo() {
 
     let tabIcons = document.getElementsByClassName('tabIcon');
     for (let i = 0; i < tabIcons.length; i++) {
-        tabIcons[i].addEventListener("click", ()=> restoreAndLaunch(i));
+        tabIcons[i].addEventListener('click', ()=> restoreAndLaunch(i));
     }
     restoreListNames();
 }
@@ -74,7 +157,7 @@ function addTab() {
             createNewTabBlock();
             retrieveTabInfo();
             chrome.runtime.sendMessage({
-                msg: "newTab",
+                msg: 'newTab',
             });
         }
     }); 
@@ -83,8 +166,8 @@ function addTab() {
 
 
 function nameIfEmpty(string, num) {
-    if (string == "") {
-        return "Name" + num;
+    if (string == '') {
+        return 'Name' + num;
     } else {
         return string;
     }
@@ -105,9 +188,9 @@ function restoreListNames() {
 }
 
 function restoreAndLaunch(index) {
-    console.log("restoring is happening"); 
+    console.log('restoring is happening'); 
     chrome.storage.sync.get({
-        websiteList: [""],
+        websiteList: [''],
         tabBlocks: 1,
     }, function(items) {
         resizeArray(items.websiteList, items.tabBlocks);
@@ -118,10 +201,10 @@ function restoreAndLaunch(index) {
 
 function sendMessageToOptions(theList) {
     //save_options();
-    console.log("popup sendMessage ran");
-    if (theList !== "") {
+    console.log('popup sendMessage ran');
+    if (theList !== '') {
         chrome.runtime.sendMessage({
-            msg: "launchList",
+            msg: 'launchList',
             linkString: theList
         });
     }
@@ -129,26 +212,26 @@ function sendMessageToOptions(theList) {
 
 
 function createNewTabBlock() {
-    var tabBlockDiv = document.createElement("div");
-    tabBlockDiv.className = "tabBlock";
+    var tabBlockDiv = document.createElement('div');
+    tabBlockDiv.className = 'tabBlock';
 
-    var label = document.createElement("label");
-    label.className = "tabName";
+    var label = document.createElement('label');
+    label.className = 'tabName';
 
-    var tabIconImg = document.createElement("img");
-    tabIconImg.className = "tabIcon";
-    tabIconImg.src = "../images/tab1.png";
+    var tabIconImg = document.createElement('img');
+    tabIconImg.className = 'tabIcon';
+    tabIconImg.src = '../images/tab1.png';
 
-    var deleteIconImg = document.createElement("img");
-    deleteIconImg.className = "deleteIcon";
-    deleteIconImg.src = "../images/delete.png";
+    var deleteIconImg = document.createElement('img');
+    deleteIconImg.className = 'deleteIcon';
+    deleteIconImg.src = '../images/delete.png';
 
     tabBlockDiv.appendChild(label);
-    tabBlockDiv.appendChild(document.createElement("br"));
+    tabBlockDiv.appendChild(document.createElement('br'));
     tabBlockDiv.appendChild(tabIconImg);
     tabBlockDiv.appendChild(deleteIconImg);
 
-    document.getElementById("tabBlockDivWrapper").appendChild(tabBlockDiv);
+    document.getElementById('tabBlockDivWrapper').appendChild(tabBlockDiv);
 }
 
 
@@ -158,7 +241,7 @@ function resizeArray(arr, size) {
         arr.length = size;
         for (let i = 0; i < size; i++) {
             if (arr[i] == null || arr[i] == undefined) {
-                arr[i] = "";
+                arr[i] = '';
             }
         }
     }

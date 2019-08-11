@@ -3,15 +3,11 @@ console.log("options.js running");
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.msg) {
         case "newTab":
-            undoJavaScriptHTML();
-            initialLoad();
+            refreshPage();
             break;
         case "removeTabSettings":
-            chrome.storage.sync.get({
-                tabIndex: -1,
-            }, function(items) {
-                removeTabSettings(items.tabIndex);
-            }); 
+            removeTabSettings(request.tabIndex);
+            refreshPage();
             break;
     }
 });
@@ -22,9 +18,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 //     testListLast[testListLast].scrollTop = testListLast[testListLast].scrollHeight;
 // }
 
-function removeTabSettings(index) {
-    console.log("removeTabSettings aunched with index: " + index);
+function refreshPage() {
+    undoJavaScriptHTML();
+    initialLoad();
 }
+
+function removeTabSettings(index) {
+    let tabSettingsBlocks = document.getElementsByClassName('tabSettingsBlock');
+    tabSettingsBlocks[index].remove();
+
+}
+
 
 function undoJavaScriptHTML() {
     document.body.innerHTML = "";
