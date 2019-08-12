@@ -63,22 +63,23 @@ function initialLoad(numOfBlocks) {
         });
     });
 
-    deleteIcon();
+    addListenersToDeleteIcons();
 
 }
 
 
-function deleteIcon() {
+function addListenersToDeleteIcons() {
     let deleteIcons = document.getElementsByClassName('deleteIcon');
     for (let i = 0; i < deleteIcons.length; i++) {
         deleteIcons[i].addEventListener('click', ()=> removeTabBlockAndListeners(i), false);
     }
+    addListenersToTabIcons();
 }
 
 function removeTabBlockAndListeners(index) {
     console.log('popup remove listeners and block index: ' + index);
     removeTabBlock(index);
-    removeListeners();
+    removeDeleteIconListeners();
     updateTabSettings(index);
 
     chrome.runtime.sendMessage({
@@ -92,15 +93,25 @@ function removeTabBlock(index) {
     tabBlocks[index].remove();
 }
 
-function removeListeners() {
-    let deleteIcons = document.getElementsByClassName('deleteIcon');
-    for (let i = 0; i < deleteIcons.length; i++) {
-        var deleteIconsNew = deleteIcons[i].cloneNode(true);
-        deleteIcons[i].parentNode.replaceChild(deleteIconsNew, deleteIcons[i]);  
-    }
-    deleteIcon();
+function removeDeleteIconListeners() {
+    removeListenersFromArray(document.getElementsByClassName('deleteIcon'));
+    removeListenersFromArray(document.getElementsByClassName('tabIcon'));
+    addListenersToDeleteIcons();
 }
 
+function removeListenersFromArray(arrayOfObjects) {
+    for (let i = 0; i < arrayOfObjects.length; i++) {
+        var newArrayOfObjects = arrayOfObjects[i].cloneNode(true);
+        arrayOfObjects[i].parentNode.replaceChild(newArrayOfObjects, arrayOfObjects[i]);  
+    }
+}
+
+function addListenersToTabIcons() {
+    let tabIcons = document.getElementsByClassName('tabIcon');
+    for (let i = 0; i < tabIcons.length; i++) {
+        tabIcons[i].addEventListener('click', ()=> restoreAndLaunch(i));
+    }
+}
 
 
 
@@ -128,17 +139,11 @@ function updateTabSettings(index) {
     });
 }
 
-
-
-
 function retrieveTabInfo() {
     var tabBlockNum = document.getElementsByClassName('tabBlock').length;
     setNumOfTabBlocks(tabBlockNum);
 
-    let tabIcons = document.getElementsByClassName('tabIcon');
-    for (let i = 0; i < tabIcons.length; i++) {
-        tabIcons[i].addEventListener('click', ()=> restoreAndLaunch(i));
-    }
+    //addListenersToTabIcons();
     restoreListNames();
 }
 
@@ -156,6 +161,7 @@ function addTab() {
         if (items.tabBlocks <= 9) {
             createNewTabBlock();
             retrieveTabInfo();
+            removeDeleteIconListeners();
             chrome.runtime.sendMessage({
                 msg: 'newTab',
             });
@@ -212,6 +218,14 @@ function sendMessageToOptions(theList) {
 
 
 function createNewTabBlock() {
+    var imgArray = new Array();
+    for (let i = 0; i < 24; i++) {
+        imgArray[i] = new Image();
+        imgArray[i].src = '../images/tabImages/tab' + i + '.png';
+    }
+    var randomTabImagePath = imgArray[Math.floor(Math.random()*imgArray.length)].src;
+
+
     var tabBlockDiv = document.createElement('div');
     tabBlockDiv.className = 'tabBlock';
 
@@ -220,7 +234,7 @@ function createNewTabBlock() {
 
     var tabIconImg = document.createElement('img');
     tabIconImg.className = 'tabIcon';
-    tabIconImg.src = '../images/tab1.png';
+    tabIconImg.src = randomTabImagePath;
 
     var deleteIconImg = document.createElement('img');
     deleteIconImg.className = 'deleteIcon';
