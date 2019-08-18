@@ -1,3 +1,10 @@
+//todo: implement color change function
+//TODO:
+
+//1. continue implementing color change function
+//2. fix bug when adding and deleting tabs while options.html is open.
+//   (the blocks don't delete themselves when I delete them from popup.html)
+
 console.log("options.js running");
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -65,9 +72,10 @@ function setSettings() {
 function initialLoad() {
     chrome.storage.sync.get({
         tabBlocks: 1,
+        tabIconNum: [],
     }, function(items) {
         for (let i = 0; i < items.tabBlocks; i++) {
-            createNewTabSettingsBlock(i + 1);
+            createNewTabSettingsBlock(i, items.tabIconNum[i]);
         }
         setSettings();
     }); 
@@ -132,18 +140,41 @@ function restoreData() {
 
 
 
-  function createNewTabSettingsBlock(listNum) {
-    var div = document.createElement("div");
-    div.className = "tabSettingsBlock";
+  function createNewTabSettingsBlock(index, colorNum) {
+    var divBlock = document.createElement("div");
+    divBlock.className = "tabSettingsBlock";
 
     var span = document.createElement("span");
     span.className = "listNameSpan";
-    span.innerHTML = "List " + listNum + " name: ";
+    span.innerHTML = "List " + (index + 1) + " name: ";
 
     var input = document.createElement("input");
     input.type = "text";
     input.maxLength = "10";
     input.className = "listName";
+    
+    var divColor = document.createElement('div');
+    divColor.className = "colorDisplay";
+    //divColor.id = "colorNumber" + colorNum;
+
+    ///////
+    var arrayOfColors = ['#42C8A5','#42C6C8','#42A4C9','#4184C8','#4262C7','#4242C8','#6642C8','#8842C7','#A741C8','#C842C5',
+                         '#C842A3','#C94284','#C84362','#C84241','#C76244','#C88443','#C8A443','#C9C643','#A7C843','#86C842',
+                         '#64C842','#42C843','#41C862','#42C785'];
+
+    var select = document.createElement("select");
+    select.id = "colorDropDown";
+
+    for (let i = 0; i < 24; i++) {
+        var option = document.createElement('option');
+        option.value = i;
+        option.style = "background-Color: " + arrayOfColors[i];
+        option.innerHTML = i;
+        select.appendChild(option);
+    }
+    select.selectedIndex = colorNum;
+    divColor.style = "background-color: " + arrayOfColors[colorNum];
+    ///////
 
     var textarea = document.createElement("textarea");
     textarea.className = "textbox";
@@ -153,19 +184,22 @@ function restoreData() {
     var button = document.createElement("button");
     button.className = "testList";
     button.type = "button";
-    button.innerHTML = "Test List #" + listNum;
+    button.innerHTML = "Test List #" + (index + 1);
 
-    div.appendChild(span);
-    div.appendChild(input);
-    div.appendChild(document.createElement("br"));
-    div.appendChild(textarea);
-    div.appendChild(document.createElement("br"));
-    div.appendChild(button);
+    divBlock.appendChild(span);
+    divBlock.appendChild(input);
+    divBlock.appendChild(divColor);
+    divBlock.appendChild(select);
+    divBlock.appendChild(document.createElement("br"));
+    divBlock.appendChild(textarea);
+    divBlock.appendChild(document.createElement("br"));
+    divBlock.appendChild(button);
 
-    document.body.appendChild(div);
+    document.body.appendChild(divBlock);
     document.body.appendChild(document.createElement("br"));
     document.body.appendChild(document.createElement("br"));
     document.body.appendChild(document.createElement("br"));
+    //document.getElementById("colorDropDown").selectedIndex = index;
 }
 
 

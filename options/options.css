@@ -14,3 +14,20 @@ h3 {
     background-color: rgb(182, 182, 182);
     position: sticky;
 }
+
+#colorDropDown:active, #colorDropDown:hover {
+        outline: none;
+}
+
+#colorDropDown {
+    width: 5em;
+}
+
+.colorDisplay {
+    height: 1.5em;
+    width: 4em;
+    display: inline-block;
+    margin-left: 1em;
+    position: relative;
+    top: .4em;
+}
