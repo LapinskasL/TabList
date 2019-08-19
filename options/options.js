@@ -2,8 +2,6 @@
 //TODO:
 
 //1. continue implementing color change function
-//2. fix bug when adding and deleting tabs while options.html is open.
-//   (the blocks don't delete themselves when I delete them from popup.html)
 
 console.log("options.js running");
 
@@ -17,13 +15,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             refreshPage();
             break;
     }
-});
 
-// function scrollDown() {
-//     var testLists = document.getElementsByClassName('testList');
-//     var testListLast = testLists.length - 1
-//     testListLast[testListLast].scrollTop = testListLast[testListLast].scrollHeight;
-// }
+});
 
 function refreshPage() {
     undoJavaScriptHTML();
@@ -72,7 +65,7 @@ function setSettings() {
 function initialLoad() {
     chrome.storage.sync.get({
         tabBlocks: 1,
-        tabIconNum: [],
+        tabIconNum: ['0'],
     }, function(items) {
         for (let i = 0; i < items.tabBlocks; i++) {
             createNewTabSettingsBlock(i, items.tabIconNum[i]);
@@ -119,8 +112,6 @@ function sendMessageToBackground(index) {
 
 // Restores list into the textbox.
 function restoreData() {
-    console.log("restoring is happening");
-    // Use default value comments = false and playlists = false.
     chrome.storage.sync.get({
         websiteList: [],       
         listNames: [],
@@ -155,9 +146,7 @@ function restoreData() {
     
     var divColor = document.createElement('div');
     divColor.className = "colorDisplay";
-    //divColor.id = "colorNumber" + colorNum;
 
-    ///////
     var arrayOfColors = ['#42C8A5','#42C6C8','#42A4C9','#4184C8','#4262C7','#4242C8','#6642C8','#8842C7','#A741C8','#C842C5',
                          '#C842A3','#C94284','#C84362','#C84241','#C76244','#C88443','#C8A443','#C9C643','#A7C843','#86C842',
                          '#64C842','#42C843','#41C862','#42C785'];
@@ -174,7 +163,6 @@ function restoreData() {
     }
     select.selectedIndex = colorNum;
     divColor.style = "background-color: " + arrayOfColors[colorNum];
-    ///////
 
     var textarea = document.createElement("textarea");
     textarea.className = "textbox";
@@ -199,7 +187,6 @@ function restoreData() {
     document.body.appendChild(document.createElement("br"));
     document.body.appendChild(document.createElement("br"));
     document.body.appendChild(document.createElement("br"));
-    //document.getElementById("colorDropDown").selectedIndex = index;
 }
 
 

@@ -1,7 +1,11 @@
 //TODO:
 
-//1. fix issue with spaces in tab names
-//2. format tab names nicely
+//0. continue implementing color change function
+//1. format tab names nicely (issue with tab names containing spaces is caused by
+//   the width of the label)
+//2. debug code
+//3. clean up, reorder code
+//4. document code
 
 
 
@@ -10,22 +14,12 @@ console.log('popup.js running');
 window.onload = function() {
     initialLoad();
     document.getElementById('plusIcon').addEventListener('click', addTab);
-    console.log('popup window.onload ran');
 };
-
-// function loadTabBlocks() {
-//     chrome.storage.sync.get({
-//         tabBlocks: 0,
-//         tabIconNum: [],
-//     }, function(items) {
-//         initialLoad(items.tabBlocks);
-//     });  
-// }
 
 function initialLoad() {
     chrome.storage.sync.get({
-        tabBlocks: 0,
-        tabIconNum: [],
+        tabBlocks: 1,
+        tabIconNum: ['0'],
     }, function(items) {
         for (let i = 0; i < items.tabBlocks; i++) {
             createNewTabBlock(items.tabIconNum[i]);
@@ -80,15 +74,9 @@ function addListenersToDeleteIcons() {
 }
 
 function removeTabBlockAndListeners(index) {
-    console.log('popup remove listeners and block index: ' + index);
     removeTabBlock(index);
     removeDeleteIconListeners();
     updateTabSettings(index);
-
-    chrome.runtime.sendMessage({
-        msg: 'removeTabSettings',
-        tabIndex: index,
-    });
 }
 
 function removeTabBlock(index) {
@@ -122,7 +110,7 @@ function updateTabSettings(index) {
     chrome.storage.sync.get({
         listNames: [],
         websiteList: [],
-        tabIconNum: [],
+        tabIconNum: ['0'],
         tabBlocks: 1,
     }, function (items) {
         let updatedListNames = [];
@@ -143,18 +131,22 @@ function updateTabSettings(index) {
             tabBlocks: updatedTabBlocks,
             tabIconNum: updatedTabIconNum,
         });
+
+        chrome.runtime.sendMessage({
+            msg: 'removeTabSettings',
+            tabIndex: index,
+        });
     });
 }
 
 function setTabIconNum(num) {
     // by passing an object you can define default values e.g.: []
     chrome.storage.sync.get({
-        tabIconNum: [],
+        tabIconNum: ['0'],
         tabBlocks: 1,
     }, function (items) {
 
         var tabIconNum = resizeArray(items.tabIconNum, items.tabBlocks);
-        //tabIconNum = [];
         tabIconNum.push(num);
         // set the new array value to the same key
         chrome.storage.sync.set({
@@ -163,30 +155,27 @@ function setTabIconNum(num) {
         retrieveTabInfo();
         restoreListNames();
         removeDeleteIconListeners();
+        chrome.runtime.sendMessage({
+            msg: 'newTab',
+        });
     });
 }
 
 function retrieveTabInfo() {
     var tabBlockNum = document.getElementsByClassName('tabBlock').length;
     setNumOfTabBlocks(tabBlockNum);
-
-    //addListenersToTabIcons();
-    //restoreListNames();
 }
 
-// restoreListNamesAndIcons
 function restoreListNames() {
     chrome.storage.sync.get({
         listNames: [],
-        tabIconNum: [],
+        tabIconNum: ['0'],
         tabBlocks: 1,
     }, function(items) {
         let tabNames = document.getElementsByClassName('tabName');
         let listNames = resizeArray(items.listNames, items.tabBlocks);
 
         let tabIcons = document.getElementsByClassName('tabIcon');
-        //resize?
-        console.log(listNames[0]);
         for (let i = 0; i < tabNames.length; i++) {
             tabNames[i].innerHTML = listNames[i];
             tabIcons[i].src = '../images/tabImages/tab' + items.tabIconNum[i] + '.png';
@@ -210,9 +199,6 @@ function addTab() {
             let randNum = Math.floor(Math.random() * Math.floor(24));
             createNewTabBlock(randNum);
             setTabIconNum(randNum);
-            chrome.runtime.sendMessage({
-                msg: 'newTab',
-            });
         }
     });   
 }
@@ -227,7 +213,6 @@ function nameIfEmpty(string, num) {
 }
 
 function restoreAndLaunch(index) {
-    console.log('restoring is happening'); 
     chrome.storage.sync.get({
         websiteList: [''],
         tabBlocks: 1,
@@ -238,8 +223,6 @@ function restoreAndLaunch(index) {
   }
 
 function sendMessageToOptions(theList) {
-    //save_options();
-    console.log('popup sendMessage ran');
     if (theList !== '') {
         chrome.runtime.sendMessage({
             msg: 'launchList',
@@ -250,13 +233,6 @@ function sendMessageToOptions(theList) {
 
 
 function createNewTabBlock(num) {
-    // var imgArray = new Array();
-    // for (let i = 0; i < 24; i++) {
-    //     imgArray[i] = new Image();
-    //     imgArray[i].src = '../images/tabImages/tab' + i + '.png';
-    // }
-    // var randomTabImagePath = imgArray[Math.floor(Math.random()*imgArray.length)].src;
-
     var tabBlockDiv = document.createElement('div');
     tabBlockDiv.className = 'tabBlock';
 
