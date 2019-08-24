@@ -1,7 +1,8 @@
 {
     "manifest_version": 2,
     "name": "TabList",
-    "version": "0.1",
+    "version": "1.0",
+    "description": "Create lists of tabs and launch them in a new window.",
     "permissions": [ 
         //"webNavigation", 
         //"*://*/*",
@@ -16,7 +17,7 @@
     //     }
     // ],
     "browser_action": {
-        "default_icon": "images/icon.png",
+        "default_icon": "images/extensionIcons/extensionIcon128.png",
         "default_popup": "popup/popup.html",
         "default_title": "TabList"
     },
@@ -26,5 +27,10 @@
       },
     "background": {
         "scripts": ["background.js"]
+    },
+    "icons": { 
+        // "16": "icon16.png",
+        // "48": "icon48.png",
+       "128": "images/extensionIcons/extensionIcon128.png" 
     }
 }
