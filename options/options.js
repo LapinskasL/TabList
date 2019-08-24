@@ -1,7 +1,7 @@
-//todo: implement color change function
+
 //TODO:
 
-//1. continue implementing color change function
+//1. debug
 
 console.log("options.js running");
 
@@ -53,11 +53,20 @@ function setSettings() {
     let testButtons = document.getElementsByClassName('testList');
     let textBoxes = document.getElementsByClassName('textbox');
     let inputs = document.getElementsByTagName('input');
+    let colorDropDowns = document.getElementsByClassName('colorDropDown');
+    let colorDisplays = document.getElementsByClassName('colorDisplay');
 
     for (let i = 0; i < textBoxes.length; i++) {
         testButtons[i].addEventListener("click", ()=> sendMessageToBackground(i));
         textBoxes[i].addEventListener("change", saveData);
         inputs[i].addEventListener("change", saveData);
+        colorDropDowns[i].addEventListener("change", function () {
+            let optionBackColor = colorDropDowns[i].options[colorDropDowns[i].selectedIndex].style.backgroundColor;
+            let optionValue = colorDropDowns[i].options[colorDropDowns[i].selectedIndex].value;
+
+            colorDisplays[i].style.backgroundColor = optionBackColor;
+            changeTabIconNums(i, optionValue);
+        });
     }
 }
 
@@ -65,13 +74,36 @@ function setSettings() {
 function initialLoad() {
     chrome.storage.sync.get({
         tabBlocks: 1,
-        tabIconNum: ['0'],
+        tabIconNums: ['0'],
     }, function(items) {
         for (let i = 0; i < items.tabBlocks; i++) {
-            createNewTabSettingsBlock(i, items.tabIconNum[i]);
+            createNewTabSettingsBlock(i, items.tabIconNums[i]);
         }
         setSettings();
     }); 
+}
+
+function changeTabIconNums(index, num) {
+    // by passing an object you can define default values e.g.: []
+    chrome.storage.sync.get({
+        tabIconNums: ['0'],
+        tabBlocks: 1,
+    }, function (items) {
+
+        tabIconNums = [];
+
+        for (let i = 0; i < items.tabBlocks; i++) {
+            if (i != index) {
+                tabIconNums.push(items.tabIconNums[i]);
+            } else {
+                tabIconNums.push(num);
+            }
+        }
+        // set the new array value to the same key
+        chrome.storage.sync.set({
+            tabIconNums: tabIconNums
+        });
+    });
 }
 
 function saveData() {
@@ -141,7 +173,7 @@ function restoreData() {
 
     var input = document.createElement("input");
     input.type = "text";
-    input.maxLength = "10";
+    input.maxLength = "8";
     input.className = "listName";
     
     var divColor = document.createElement('div');
@@ -152,7 +184,7 @@ function restoreData() {
                          '#64C842','#42C843','#41C862','#42C785'];
 
     var select = document.createElement("select");
-    select.id = "colorDropDown";
+    select.className = "colorDropDown";
 
     for (let i = 0; i < 24; i++) {
         var option = document.createElement('option');
@@ -161,6 +193,7 @@ function restoreData() {
         option.innerHTML = i;
         select.appendChild(option);
     }
+
     select.selectedIndex = colorNum;
     divColor.style = "background-color: " + arrayOfColors[colorNum];
 

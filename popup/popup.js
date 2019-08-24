@@ -1,11 +1,6 @@
 //TODO:
 
-//0. continue implementing color change function
-//1. format tab names nicely (issue with tab names containing spaces is caused by
-//   the width of the label)
-//2. debug code
-//3. clean up, reorder code
-//4. document code
+// debug, refractor??, document code
 
 
 
@@ -19,10 +14,10 @@ window.onload = function() {
 function initialLoad() {
     chrome.storage.sync.get({
         tabBlocks: 1,
-        tabIconNum: ['0'],
+        tabIconNums: ['0'],
     }, function(items) {
         for (let i = 0; i < items.tabBlocks; i++) {
-            createNewTabBlock(items.tabIconNum[i]);
+            createNewTabBlock(items.tabIconNums[i]);
         }
     
         retrieveTabInfo();
@@ -55,6 +50,10 @@ function initialLoad() {
                     deleteIcons[i].style.display = 'none';
                 }
             });
+        });
+
+        trashClosedIcon.addEventListener('mouseover', function() {
+            trashClosedIcon.src = "../images/trash_closed_animation.gif";
         });
     
         addListenersToDeleteIcons();
@@ -110,18 +109,18 @@ function updateTabSettings(index) {
     chrome.storage.sync.get({
         listNames: [],
         websiteList: [],
-        tabIconNum: ['0'],
+        tabIconNums: ['0'],
         tabBlocks: 1,
     }, function (items) {
         let updatedListNames = [];
         let updatedWebsiteList = [];
-        let updatedTabIconNum = [];
+        let updatedtabIconNums = [];
         let updatedTabBlocks =  items.tabBlocks - 1;
         for (let i = 0; i < items.tabBlocks; i++) {
             if (i !== index) {
                 updatedListNames.push(items.listNames[i]);
                 updatedWebsiteList.push(items.websiteList[i]);
-                updatedTabIconNum.push(items.tabIconNum[i]);
+                updatedtabIconNums.push(items.tabIconNums[i]);
             }
         }
         // set the new array value to the same key
@@ -129,7 +128,7 @@ function updateTabSettings(index) {
             listNames: updatedListNames,
             websiteList: updatedWebsiteList,
             tabBlocks: updatedTabBlocks,
-            tabIconNum: updatedTabIconNum,
+            tabIconNums: updatedtabIconNums,
         });
 
         chrome.runtime.sendMessage({
@@ -139,18 +138,18 @@ function updateTabSettings(index) {
     });
 }
 
-function setTabIconNum(num) {
+function settabIconNums(num) {
     // by passing an object you can define default values e.g.: []
     chrome.storage.sync.get({
-        tabIconNum: ['0'],
+        tabIconNums: ['0'],
         tabBlocks: 1,
     }, function (items) {
 
-        var tabIconNum = resizeArray(items.tabIconNum, items.tabBlocks);
-        tabIconNum.push(num);
+        var tabIconNums = resizeArray(items.tabIconNums, items.tabBlocks);
+        tabIconNums.push(num);
         // set the new array value to the same key
         chrome.storage.sync.set({
-            tabIconNum: tabIconNum,
+            tabIconNums: tabIconNums,
         });
         retrieveTabInfo();
         restoreListNames();
@@ -169,7 +168,7 @@ function retrieveTabInfo() {
 function restoreListNames() {
     chrome.storage.sync.get({
         listNames: [],
-        tabIconNum: ['0'],
+        tabIconNums: ['0'],
         tabBlocks: 1,
     }, function(items) {
         let tabNames = document.getElementsByClassName('tabName');
@@ -178,7 +177,7 @@ function restoreListNames() {
         let tabIcons = document.getElementsByClassName('tabIcon');
         for (let i = 0; i < tabNames.length; i++) {
             tabNames[i].innerHTML = listNames[i];
-            tabIcons[i].src = '../images/tabImages/tab' + items.tabIconNum[i] + '.png';
+            tabIcons[i].src = '../images/tabImages/tab' + items.tabIconNums[i] + '.png';
         }
     });  
 }
@@ -198,7 +197,7 @@ function addTab() {
             //random num between 0-23 (number of icons)
             let randNum = Math.floor(Math.random() * Math.floor(24));
             createNewTabBlock(randNum);
-            setTabIconNum(randNum);
+            settabIconNums(randNum);
         }
     });   
 }
