@@ -100,31 +100,23 @@ body {
     top: 0.5em;
     left: 0.5em;
 }
+
+#plusIcon:hover {
+    transform: scale(1.05);
+}
+
 #gearIcon:hover {
     -webkit-transform:rotate(45deg);
     -moz-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     transform: rotate(45deg);
-    -webkit-transition-duration: 0.3s;
-    -moz-transition-duration: 0.3s;
-    -o-transition-duration: 0.3s;
-    transition-duration: 0.3s;
 }
 
-#gearIcon {
+#gearIcon, #plusIcon {
     -webkit-transition: all 0.3s ease;
        -moz-transition: all 0.3s ease;
          -o-transition: all 0.3s ease;
         -ms-transition: all 0.3s ease;
             transition: all 0.3s ease;
 }
-
-
-
-/* .tabBlock img:hover {
-    -webkit-transition-duration: 0.3s;
-    -moz-transition-duration: 0.3s;
-    -o-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-} */

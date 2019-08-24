@@ -247,7 +247,7 @@ function createNewTabBlock(num) {
     '#C842A3','#C94284','#C84362','#C84241','#C76244','#C88443','#C8A443','#C9C643','#A7C843','#86C842',
     '#64C842','#42C843','#41C862','#42C785'];
 
-    var css = '#color' + num + ':hover { box-shadow: 0px 0px 3px ' + arrayOfColors[num] + ' }';
+    var css = '#color' + num + ':hover { box-shadow: 0px 0px 2px ' + arrayOfColors[num] + ' }';
     var style = document.createElement('style');
 
 
