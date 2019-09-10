@@ -4,18 +4,8 @@
     "version": "1.0",
     "description": "Create lists of tabs and launch them in a new window.",
     "permissions": [ 
-        //"webNavigation", 
-        //"*://*/*",
-        "storage" // for chrome.storage
+        "storage" 
     ],
-    // "content_scripts": [
-    //     {
-    //         "matches": ["https://www.youtube.com/*", 
-    //                     "http://www.youtube.com/*" ],
-    //         "js": ["content.js"],
-    //         "run_at": "document_end"
-    //     }
-    // ],
     "browser_action": {
         "default_icon": "images/extensionIcons/extensionIcon128.png",
         "default_popup": "popup/popup.html",
@@ -29,8 +19,6 @@
         "scripts": ["background.js"]
     },
     "icons": { 
-        // "16": "icon16.png",
-        // "48": "icon48.png",
        "128": "images/extensionIcons/extensionIcon128.png" 
     }
 }
